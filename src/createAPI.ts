@@ -10,6 +10,8 @@ export function createAPIDefinition<
     return {
       name,
       __SINGLE_REQ_SINGLE_RESP: true,
+      __requestTypeHolder: null as any,
+      __responseTypeHolder: null as any,
     };
   }
 

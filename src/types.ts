@@ -12,8 +12,8 @@ export type APIType<
   ResponseType extends BaseResponseType,
   name extends string
 > = {
-  request?: RequestType;
-  response?: ResponseType;
+  __requestTypeHolder: RequestType;
+  __responseTypeHolder: ResponseType;
   name: name;
   __SINGLE_REQ_SINGLE_RESP: true; // 1 request --> 1 response
 };

@@ -4,7 +4,7 @@ import {
   BaseResponseType,
 } from './types';
 
-export abstract class BaseServerAPI {
+export abstract class BaseAPIServer {
   handlers: {
     [apiName: string]: (req: any) => Promise<BaseResponseType>;
   } = {};
@@ -29,4 +29,5 @@ export abstract class BaseServerAPI {
       ) throw new Error(`HANDLER NOT IMPLEMENTED FOR: ${api.name}`);
     });
   }
+  abstract cleanUp(): void;
 }

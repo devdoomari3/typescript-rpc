@@ -1,15 +1,44 @@
-import { getUserPointAPI, UserId } from './sampleAPIs/userAPIs'
 import {
-  createClientStub,
-} from '../src/createClientStub'
-export abstract class BaseClientImpl {
+  APIType,
+  BaseRequestType,
+  BaseResponseType,
+} from '../src/types';
+import {
+  getUserPointAPI,
+  UserId,
+} from './sampleAPIs/userAPIs';
+
+import {
+  APICall,
+  BaseAPIClient,
+} from '../src/BaseAPIClient';
+
+type CustomBaseRequestType = BaseRequestType;
+export class ClientAPI extends BaseAPIClient {
+  call<
+    RequestType extends CustomBaseRequestType,
+    ResponseType extends BaseResponseType,
+    name extends string,
+  >(
+    api: APIType<RequestType, ResponseType, name>,
+  ): APICall<
+    typeof api.__requestTypeHolder,
+    typeof api.__responseTypeHolder,
+    name
+  > {
+    return async (req) => {
+      return null as any;
+    };
+  }
 
 }
 
-const userPointStub = createClientStub(getUserPointAPI)
+const guestClientAPI = new ClientAPI();
 
-async function test() {
-  const resp = await userPointStub({
-    userId: '1' as UserId,
-  })
-}
+const getUserPoint = guestClientAPI.call(
+  getUserPointAPI,
+);
+
+getUserPoint({
+  userId: '1' as UserId,
+});
