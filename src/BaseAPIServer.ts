@@ -1,12 +1,19 @@
 import {
+  Omit,
+} from 'typelevel-ts';
+import {
   APIType,
   BaseRequestType,
   BaseResponseType,
 } from './types';
 
+export type CleanedResponseType<
+  T extends BaseResponseType = BaseResponseType,
+> = Omit<T, '___BaseResponseType'>;
+
 export abstract class BaseAPIServer {
   handlers: {
-    [apiName: string]: (req: any) => Promise<BaseResponseType>;
+    [apiName: string]: (req: any) => Promise<CleanedResponseType>;
   } = {};
   addAPI<
     RequestType extends BaseRequestType,
@@ -14,7 +21,7 @@ export abstract class BaseAPIServer {
     name extends string
   >(
     api: APIType<RequestType, ResponseType, name>,
-    handler: (req: RequestType) => Promise<ResponseType>,
+    handler: (req: RequestType) => Promise<CleanedResponseType<ResponseType>>,
   ) {
     this.handlers[api.name] = handler;
   }

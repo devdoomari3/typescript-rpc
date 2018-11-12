@@ -1,4 +1,9 @@
 import {
+  autobind,
+} from 'core-decorators';
+import defer from 'defer-promise';
+import uuidv4 from 'uuid/v4';
+import {
   APIType,
   BaseRequestType,
   BaseResponseType,
@@ -8,26 +13,29 @@ import {
   APICall,
   BaseAPIClient,
 } from '../../BaseAPIClient';
+import {
+  EventTypes,
+  SocketIORequestType,
+  SocketIOResponseType,
+} from './common';
 
-import socketioClient from 'socket.io-client';
-
-const a = socketioClient('aa');
+@autobind
 export class SocketIOAPIClient<
   CustomBaseRequestType extends BaseRequestType = BaseRequestType
 > extends BaseAPIClient<CustomBaseRequestType> {
   responseHandlers: {
-    [requestID: string]: Promise<BaseResponseType>;
+    [requestID: string]: DeferPromise.Deferred<BaseResponseType>;
   } = {};
   constructor(
     public socket: SocketIOClient.Socket,
   ) {
     super();
-
+    socket.on(EventTypes.RESPONSE, (data: SocketIOResponseType) => {
+      const requestHandler = this.responseHandlers[data.requestId];
+      requestHandler && requestHandler.resolve(data.response);
+    });
   }
-  createResponseHandler() {
-
-  }
-  call<
+  useAPI<
     RequestType extends CustomBaseRequestType,
     ResponseType extends BaseResponseType,
     name extends string,
@@ -39,7 +47,17 @@ export class SocketIOAPIClient<
     name
   > {
     return async (req) => {
-      this.socket.send(api.name, req);
+      const requestId = uuidv4();
+      const futureResponse = defer<ResponseType>();
+      this.responseHandlers[requestId] = futureResponse;
+      const reqToSend: SocketIORequestType = {
+        apiName: api.name,
+        request: req as any,
+        requestId,
+      };
+      this.socket.emit(EventTypes.REQUEST, reqToSend);
+
+      return futureResponse.promise;
     };
   }
 }

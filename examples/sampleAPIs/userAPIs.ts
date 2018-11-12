@@ -1,39 +1,39 @@
 import {
-  BaseRequestType,
-  BaseResponseType
-} from "../../src/types";
-import {
   createAPIDefinition,
-} from '../../src/createAPI'
+} from '../../src/createAPI';
+import {
+  BaseRequestType,
+  BaseResponseType,
+} from '../../src/types';
 
 export type UserId = string & {
-  __UserId: null,
-}
+  __UserId: null;
+};
 
 export type UserPointRequestType = {
   userId: UserId;
-} & BaseRequestType
+} & BaseRequestType;
 
 export type UserPointResponseType = {
   userId: UserId;
   points: number;
-} & BaseResponseType
+} & BaseResponseType;
 
 export const getUserPointAPI = createAPIDefinition<
   UserPointRequestType,
   UserPointResponseType
->()('userPointAPI')
+>()('userPointAPI');
 
 export type UserProfileUpdateRequestType = {
   userId: UserId;
   imgFile: File;
-} & BaseRequestType
+} & BaseRequestType;
 
 export type UserProfileUpdateResponseType = {
   userId: UserId;
-} & BaseResponseType
+} & BaseResponseType;
 
 export const updateUserProfileAPI = createAPIDefinition<
   UserProfileUpdateRequestType,
   UserProfileUpdateResponseType
->()('updateUserProfile')
+>()('updateUserProfile');

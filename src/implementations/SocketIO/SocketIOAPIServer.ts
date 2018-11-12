@@ -1,13 +1,9 @@
+import { autobind } from 'core-decorators';
 import socketio from 'socket.io';
 import { BaseAPIServer } from '../../BaseAPIServer';
-import { EventTypes, SocketIORequestType } from './common';
+import { EventTypes, SocketIORequestType, SocketIOResponseType } from './common';
 
-// const app = express();
-
-// const server: Server = app.listen(1000);
-
-// const socketioTest = socketio(server);
-
+@autobind
 export class SocketIOAPIServer extends BaseAPIServer {
   sockets: {
     [socketId: string]: SocketIO.Socket;
@@ -22,10 +18,15 @@ export class SocketIOAPIServer extends BaseAPIServer {
     return async (req: SocketIORequestType) => {
       const handler = this.handlers[req.apiName];
       const result = await handler(req.request);
-      socket.send(EventTypes.RESPONSE, result);
+      socket.emit(EventTypes.RESPONSE, {
+        apiName: req.apiName,
+        response: result,
+        requestId: req.requestId,
+      } as SocketIOResponseType);
     };
   }
   addSocket(socket: SocketIO.Socket) {
+    console.error('addSocket');
     const handler = this.createRequestHandler(socket);
     socket.on(
       EventTypes.REQUEST,

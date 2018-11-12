@@ -19,7 +19,7 @@ export abstract class BaseAPIClient<
     extends BaseRequestType
      = BaseRequestType
 > {
-  abstract call<
+  abstract useAPI<
     RequestType extends CustomBaseRequestType,
     ResponseType extends BaseResponseType,
     name extends string,

@@ -6,9 +6,7 @@ import {
   BaseResponseType,
 } from '../../types';
 
-export type RequestIdType = string & {
-  ___RequestId: null;
-};
+export type RequestIdType = string;
 
 export type SocketIORequestType = {
   apiName: string;
