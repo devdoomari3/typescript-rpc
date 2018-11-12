@@ -26,7 +26,6 @@ export class SocketIOAPIServer extends BaseAPIServer {
     };
   }
   addSocket(socket: SocketIO.Socket) {
-    console.error('addSocket');
     const handler = this.createRequestHandler(socket);
     socket.on(
       EventTypes.REQUEST,

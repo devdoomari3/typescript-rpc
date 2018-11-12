@@ -36,11 +36,6 @@ describe('SocketIO implementation should...', () => {
     );
     const serverSocketIO = socketIO(httpServer);
     apiServer = new SocketIOAPIServer(serverSocketIO);
-    // console.error('httpServerAddr', httpServerAddr);
-    // const clientSocketIO = socketIOClient.connect({
-    //   host: '127.0.0.1',
-    //   port: String(port),
-    // });
     const clientSocketIO = socketIOClient.connect(
       `http://127.0.0.1:${port}`,
     );
@@ -48,12 +43,9 @@ describe('SocketIO implementation should...', () => {
     await new Promise(resolve => {
       clientSocketIO.on('connect', resolve);
     });
-    console.error(`clientSocketIO.on('connect', resolve);`);
-    apiClient = new SocketIOAPIClient(clientSocketIO);
-    console.error(`apiClient = new SocketIOAPIClient(clientSocketIO);`);
+    apiClient = new SocketIOAPIClient();
+    apiClient.init(clientSocketIO);
     apiServer.addAPI(echoAPI, async req => {
-      console.error('echoAPI apiServer');
-
       return {
         echoResp: req.echoReq,
       };

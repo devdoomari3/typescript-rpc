@@ -3,15 +3,17 @@ import {
 } from '../../createAPI';
 import {
   BaseRequestType, BaseResponseType,
+  ToRequestType,
+  ToResponseType,
 } from '../../types';
 
-export type EchoRequest = {
+export type EchoRequest = ToRequestType<{
   echoReq: string;
-} & BaseRequestType;
+}>;
 
-export type EchoResponse = {
+export type EchoResponse = ToResponseType<{
   echoResp: string;
-} & BaseResponseType;
+}>;
 
 export const echoAPI = createAPIDefinition<
   EchoRequest,

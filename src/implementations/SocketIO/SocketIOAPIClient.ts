@@ -26,10 +26,13 @@ export class SocketIOAPIClient<
   responseHandlers: {
     [requestID: string]: DeferPromise.Deferred<BaseResponseType>;
   } = {};
-  constructor(
-    public socket: SocketIOClient.Socket,
+  // FIXME: add 'requests queue' with timeout
+  //   (queue of to-send-when-socket-connects requests)
+  socket?: SocketIOClient.Socket;
+  init(
+    socket: SocketIOClient.Socket,
   ) {
-    super();
+    this.socket = socket;
     socket.on(EventTypes.RESPONSE, (data: SocketIOResponseType) => {
       const requestHandler = this.responseHandlers[data.requestId];
       requestHandler && requestHandler.resolve(data.response);
@@ -55,7 +58,11 @@ export class SocketIOAPIClient<
         request: req as any,
         requestId,
       };
-      this.socket.emit(EventTypes.REQUEST, reqToSend);
+      if (this.socket) {
+        this.socket.emit(EventTypes.REQUEST, reqToSend);
+      } else {
+        throw new Error('Request Queue Not implemented yet');
+      }
 
       return futureResponse.promise;
     };
