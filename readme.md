@@ -55,10 +55,39 @@
 
 ## API types:
 
- - simple-API: Simple request/response
+ - simple-API: Simple request/response (see above)
 
- - with-progress API:
+ - with-progress API: API with onProgress callback
    + file uploads, etc
 
- - subscription-API:
+    ```typescript
+    export type UpdateProfileRequest = ToRequestWithProgressType<{
+      username: string;
+      description: string;
+      profileImageFile: File;
+    }>;
+
+    export type UpdateProfileResponse = ToResponseType<{
+      profileUrl: string;
+    }>;
+
+    export const updateProfileAPI = createAPIWithProgressDefinition<
+      UpdateProfileRequest,
+      UpdateProfileResponse
+    >()('updateProfile');
+
+    // client:
+    const updateProfile = withProgressAPIClient.useAPI(updateProfileAPI)
+    // ...later
+    await updateProfile({
+      username: 'a',
+      description: 'b',
+      profileImageFile: someFile,
+      onProgress(progressEvent) {
+        console.log('upload progress', progressEvent)
+      }
+    })
+    ```
+
+ - subscription-API: API with 'stream' callback
    + real-time notifications, etc
