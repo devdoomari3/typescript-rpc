@@ -11,16 +11,22 @@ export type BaseResponseType = {
 
 export type ToResponseType<T> = T & BaseResponseType;
 
-export type APIType<
+export type ReqRespAPIType<
   RequestType extends BaseRequestType,
   ResponseType extends BaseResponseType,
   name extends string
 > = {
-  __requestTypeHolder: RequestType;
-  __responseTypeHolder: ResponseType;
   name: name;
-  __SINGLE_REQ_SINGLE_RESP: true; // 1 request --> 1 response
+  type: 'ReqRespAPIType'
 };
+
+export type UnpackReqRespAPIType<
+  T extends ReqRespAPIType<any, any, any>
+> = T extends ReqRespAPIType<infer RequestType, infer ResponseType, infer name> ? {
+  RequestType: RequestType;
+  ResponseType: ResponseType;
+  name: name;
+} : never;
 
 export type StreamedAPIType<
   RequestType extends BaseRequestType,

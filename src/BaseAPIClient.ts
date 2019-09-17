@@ -1,35 +1,28 @@
 import { Omit } from 'typelevel-ts';
 import {
-  APIType,
+  ReqRespAPIType,
   BaseRequestType,
   BaseResponseType,
+  UnpackReqRespAPIType,
 } from './types';
 
 export type APICall<
-  RequestType extends CustomBaseRequestType,
+  RequestType extends BaseRequestType,
   ResponseType extends BaseResponseType,
   name extends string,
-  CustomBaseRequestType extends BaseRequestType = BaseRequestType,
 > = (
   request: Omit<RequestType, '___BaseRequestType'>,
 ) => Promise<ResponseType>;
 
-export abstract class BaseAPIClient<
-  CustomBaseRequestType
-    extends BaseRequestType
-     = BaseRequestType
-> {
+export abstract class BaseAPIClient {
   abstract useAPI<
-    RequestType extends CustomBaseRequestType,
-    ResponseType extends BaseResponseType,
-    name extends string,
+    APIType extends ReqRespAPIType<any, any, any>
   >(
-    api: APIType<RequestType, ResponseType, name>,
+    api: APIType,
   ): APICall<
-    typeof api.__requestTypeHolder,
-    typeof api.__responseTypeHolder,
-    name,
-    CustomBaseRequestType
+    UnpackReqRespAPIType<APIType>['RequestType'],
+    UnpackReqRespAPIType<APIType>['ResponseType'],
+    UnpackReqRespAPIType<APIType>['name']
   >;
 
   // call<

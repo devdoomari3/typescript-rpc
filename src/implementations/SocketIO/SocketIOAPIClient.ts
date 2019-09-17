@@ -4,9 +4,10 @@ import {
 import defer from 'defer-promise';
 import uuidv4 from 'uuid/v4';
 import {
-  APIType,
+  ReqRespAPIType,
   BaseRequestType,
   BaseResponseType,
+  UnpackReqRespAPIType,
 } from '../../types';
 
 import {
@@ -20,9 +21,7 @@ import {
 } from './common';
 
 @autobind
-export class SocketIOAPIClient<
-  CustomBaseRequestType extends BaseRequestType = BaseRequestType
-> extends BaseAPIClient<CustomBaseRequestType> {
+export class SocketIOAPIClient extends BaseAPIClient {
   responseHandlers: {
     [requestID: string]: DeferPromise.Deferred<BaseResponseType>;
   } = {};
@@ -39,19 +38,19 @@ export class SocketIOAPIClient<
     });
   }
   useAPI<
-    RequestType extends CustomBaseRequestType,
-    ResponseType extends BaseResponseType,
-    name extends string,
+    APIType extends ReqRespAPIType<any, any, any>
   >(
-    api: APIType<RequestType, ResponseType, name>,
+    api: APIType,
   ): APICall<
-    typeof api.__requestTypeHolder,
-    typeof api.__responseTypeHolder,
-    name
+    UnpackReqRespAPIType<APIType>['RequestType'],
+    UnpackReqRespAPIType<APIType>['ResponseType'],
+    UnpackReqRespAPIType<APIType>['name']
   > {
     return async (req) => {
       const requestId = uuidv4();
-      const futureResponse = defer<ResponseType>();
+      const futureResponse = defer<
+        UnpackReqRespAPIType<APIType>['ResponseType']
+      >();
       this.responseHandlers[requestId] = futureResponse;
       const reqToSend: SocketIORequestType = {
         apiName: api.name,

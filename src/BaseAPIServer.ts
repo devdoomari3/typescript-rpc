@@ -2,9 +2,10 @@ import {
   Omit,
 } from 'typelevel-ts';
 import {
-  APIType,
+  ReqRespAPIType,
   BaseRequestType,
   BaseResponseType,
+  UnpackReqRespAPIType,
 } from './types';
 
 export type CleanedResponseType<
@@ -16,22 +17,22 @@ export abstract class BaseAPIServer {
     [apiName: string]: (req: any) => Promise<CleanedResponseType>;
   } = {};
   addAPI<
-    RequestType extends BaseRequestType,
-    ResponseType extends BaseResponseType,
-    name extends string
+    APIType extends ReqRespAPIType<any, any, any>
   >(
-    api: APIType<RequestType, ResponseType, name>,
-    handler: (req: RequestType) => Promise<CleanedResponseType<ResponseType>>,
+    api: APIType,
+    handler: (
+      req: UnpackReqRespAPIType<APIType>['RequestType'],
+    ) => Promise<CleanedResponseType<UnpackReqRespAPIType<APIType>['ResponseType']>>,
   ) {
     this.handlers[api.name] = handler;
   }
   checkAPIAllImplemented(apis: {
-    [name: string]: APIType<any, any, string>;
+    [name: string]: ReqRespAPIType<any, any, string>;
   }) {
     Object.keys(apis).forEach(key => {
       const api = apis[key];
       if (
-        api.__SINGLE_REQ_SINGLE_RESP &&
+        api.type === 'ReqRespAPIType' &&
         !this.handlers[api.name]
       ) throw new Error(`HANDLER NOT IMPLEMENTED FOR: ${api.name}`);
     });
