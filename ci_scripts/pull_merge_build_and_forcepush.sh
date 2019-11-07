@@ -1,4 +1,5 @@
-echo $PWD
+set -o xtrace
+
 if [ "${REPO_BRANCH}" == "master" ] || [[ $REPO_BRANCH == dist-* ]]
 then
   exit
@@ -7,7 +8,7 @@ if [ "${REPO_BRANCH}" == "develop" ]
 then
   git checkout master
 else
-  git checkout -b $'dist-'"$REPO_BRANCH"
+  git checkout -b $'dist-'"$REPO_BRANCH" || git checkout $'dist-'"$REPO_BRANCH"
 fi
 git checkout master
 mkdir -p ~/.git && git config user.email "devdoomari@gmail.com" && git config user.name "devdoomari.circleci"
