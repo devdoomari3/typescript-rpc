@@ -1,4 +1,4 @@
-set -e
+echo $PWD
 if [ "${REPO_BRANCH}" == "master" ] || [[ $REPO_BRANCH == dist-* ]]
 then
   exit
