@@ -1,0 +1,45 @@
+user.email: devdoomari@gmail.com
+user.name: devdoomari-circlei
+jobs:
+  push_dist:
+    docker:
+      - image: circleci/node:12-browsers
+    steps:
+      - checkout
+      - run:
+          name: Set git username/email
+          command: 'mkdir -p ~/.git && git config --global user.email "devdoomari@gmail.com" && git config --global user.name "devdoomari.circleci"'
+      - run:
+          name: install-yarn-globally
+          command: 'sudo npm install -g yarn'
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-packages-{{ .Branch }}
+            - yarn-packages-master
+            - yarn-packages-
+      - run:
+          name: Install Dependencies
+          command: yarn install
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules/
+      - run:
+          name: build
+          command: yarn build
+      - run:
+          name: pull-merge-build-forcepush
+          command: source ./ci_scripts/env_from_circleci.sh && ./ci_scripts/pull_merge_build_and_forcepush.sh
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - push_dist:
+          filters:
+            branches:
+              ignore:
+               - /^dist*/
+               - master
