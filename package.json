@@ -36,8 +36,10 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
+    "clean": "rm -rf lib ts_compiled",
     "test": "jest",
-    "lint": "tslint --project tsconfig.json"
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc --project tsconfig.build.json"
   },
   "version": "0.0.1"
 }

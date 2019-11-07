@@ -28,9 +28,6 @@
   },
   "exclude": [
     "node_modules",
-    "BackEnd/node_modules",
-    "cypress",
-    "FrontEnd",
     "ts_compiled",
     "tools",
     "vendors",
