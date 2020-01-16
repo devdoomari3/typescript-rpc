@@ -1,5 +1,6 @@
 user.email: devdoomari@gmail.com
 user.name: devdoomari-circlei
+version: 2.1
 jobs:
   push_dist:
     docker:
