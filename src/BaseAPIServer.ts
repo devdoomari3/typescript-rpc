@@ -1,7 +1,4 @@
 import {
-  Omit,
-} from 'typelevel-ts';
-import {
   ReqRespAPIType,
   BaseRequestType,
   BaseResponseType,
