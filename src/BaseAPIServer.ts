@@ -1,7 +1,7 @@
 import {
-  ReqRespAPIType,
   BaseRequestType,
   BaseResponseType,
+  ReqRespAPIType,
   UnpackReqRespAPIType,
 } from './types';
 
@@ -26,13 +26,14 @@ export abstract class BaseAPIServer {
   checkAPIAllImplemented(apis: {
     [name: string]: ReqRespAPIType<any, any, string>;
   }) {
-    Object.keys(apis).forEach(key => {
-      const api = apis[key];
-      if (
-        api.type === 'ReqRespAPIType' &&
-        !this.handlers[api.name]
-      ) throw new Error(`HANDLER NOT IMPLEMENTED FOR: ${api.name}`);
-    });
+    Object.keys(apis)
+      .forEach(key => {
+        const api = apis[key];
+        if (
+          api.APIType === 'ReqRespAPIType' &&
+          !this.handlers[api.name]
+        ) throw new Error(`HANDLER NOT IMPLEMENTED FOR: ${api.name}`);
+      });
   }
   abstract cleanUp(): void;
 }

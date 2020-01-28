@@ -17,7 +17,7 @@ export type ReqRespAPIType<
   name extends string
 > = {
   name: name;
-  type: 'ReqRespAPIType'
+  APIType: 'ReqRespAPIType';
 };
 
 export type UnpackReqRespAPIType<

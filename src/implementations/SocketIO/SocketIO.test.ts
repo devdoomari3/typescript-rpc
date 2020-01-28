@@ -14,11 +14,13 @@ function listenHTTPServer(
   host: string,
 ) {
   return new Promise<http.Server>((resolve, reject) => {
-    const listeningServer = httpServer.listen(
-      port, host,
-    ).once('listening', () => {
-      resolve(listeningServer);
-    });
+    const listeningServer = httpServer
+      .listen(
+        port, host,
+      )
+      .once('listening', () => {
+        resolve(listeningServer);
+      });
   });
 }
 describe('SocketIO implementation should...', () => {
@@ -58,7 +60,8 @@ describe('SocketIO implementation should...', () => {
       echoReq: 'test',
     });
     console.error(result);
-    expect(true).toBeTruthy();
+    expect(true)
+      .toBeTruthy();
   });
   afterEach(async () => {
     await new Promise((resolve) => {

@@ -13,6 +13,7 @@
     "@types/uuid": "^3.4.6",
     "core-decorators": "^0.20.0",
     "defer-promise": "^2.0.1",
+    "electron": "^7.1.9",
     "eslint": "^6.8.0",
     "express": "^4.16.4",
     "get-port": "^5.1.1",

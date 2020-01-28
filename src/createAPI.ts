@@ -1,4 +1,8 @@
-import { ReqRespAPIType, BaseRequestType, BaseResponseType } from './types';
+import {
+  BaseRequestType,
+  BaseResponseType,
+  ReqRespAPIType,
+} from './types';
 
 export function createAPIDefinition<
   RequestType extends BaseRequestType,
@@ -9,7 +13,7 @@ export function createAPIDefinition<
   >(name: name): ReqRespAPIType<RequestType, ResponseType, name> {
     return {
       name,
-      type: 'ReqRespAPIType',
+      APIType: 'ReqRespAPIType',
     };
   }
 
