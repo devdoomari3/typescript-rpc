@@ -6,7 +6,7 @@ export type BaseRequestType = {
 export type ToRequestType<T> = T & BaseRequestType;
 
 export type BaseResponseType = {
-  ___BaseResponseType: null;
+  ___BaseResponseType: boolean;
 };
 
 export type ToResponseType<T> = T & BaseResponseType;
@@ -14,6 +14,7 @@ export type ToResponseType<T> = T & BaseResponseType;
 export type ReqRespAPIType<
   RequestType extends BaseRequestType,
   ResponseType extends BaseResponseType,
+  RuntimeErrorTypes extends Error,
   name extends string
 > = {
   name: name;
@@ -21,12 +22,18 @@ export type ReqRespAPIType<
 };
 
 export type UnpackReqRespAPIType<
-  T extends ReqRespAPIType<any, any, any>
-> = T extends ReqRespAPIType<infer RequestType, infer ResponseType, infer name> ? {
-  RequestType: RequestType;
-  ResponseType: ResponseType;
-  name: name;
-} : never;
+  T extends ReqRespAPIType<any, any, any, any>
+> = T extends ReqRespAPIType<
+                infer RequestType,
+                infer ResponseType,
+                infer PossibleRuntimeErrorTypes,
+                infer name
+              > ? {
+                RequestType: RequestType;
+                ResponseType: ResponseType;
+                PossibleRuntimeErrorTypes: PossibleRuntimeErrorTypes;
+                name: name;
+              } : never;
 
 export type StreamedAPIType<
   RequestType extends BaseRequestType,

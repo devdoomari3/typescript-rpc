@@ -5,11 +5,14 @@ import {
   getUserPointAPI,
 } from '../sampleAPIs/userAPIs';
 export function setUserPointHandler(server: BaseAPIServer) {
-  server.addAPI(getUserPointAPI, async req => {
-    return {
-      userId: req.userId,
-      points: 1,
-      ___BaseResponseType: null,
-    };
-  });
+  server.addAPI(
+    getUserPointAPI,
+    async req => {
+      return {
+        userId: req.userId,
+        points: 1,
+        ___BaseResponseType: true,
+      };
+    },
+  );
 }

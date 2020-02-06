@@ -4,9 +4,9 @@ import {
 import defer from 'defer-promise';
 import uuidv4 from 'uuid/v4';
 import {
-  ReqRespAPIType,
   BaseRequestType,
   BaseResponseType,
+  ReqRespAPIType,
   UnpackReqRespAPIType,
 } from '../../types';
 
@@ -19,6 +19,7 @@ import {
   SocketIORequestType,
   SocketIOResponseType,
 } from './common';
+import { ConnectionError } from '../../errors/ConnectionError';
 
 @autobind
 export class SocketIOAPIClient extends BaseAPIClient {
@@ -34,16 +35,17 @@ export class SocketIOAPIClient extends BaseAPIClient {
     this.socket = socket;
     socket.on(EventTypes.RESPONSE, (data: SocketIOResponseType) => {
       const requestHandler = this.responseHandlers[data.requestId];
-      requestHandler && requestHandler.resolve(data.response);
+      requestHandler?.resolve(data.response);
     });
   }
-  useAPI<
-    APIType extends ReqRespAPIType<any, any, any>
+  __callAPI<
+    APIType extends ReqRespAPIType<any, any, any, any>
   >(
     api: APIType,
   ): APICall<
     UnpackReqRespAPIType<APIType>['RequestType'],
     UnpackReqRespAPIType<APIType>['ResponseType'],
+    UnpackReqRespAPIType<APIType>['PossibleRuntimeErrorTypes'],
     UnpackReqRespAPIType<APIType>['name']
   > {
     return async (req) => {
@@ -57,10 +59,10 @@ export class SocketIOAPIClient extends BaseAPIClient {
         request: req as any,
         requestId,
       };
-      if (this.socket) {
+      if (this.socket && this.socket.connected) {
         this.socket.emit(EventTypes.REQUEST, reqToSend);
       } else {
-        throw new Error('Request Queue Not implemented yet');
+        futureResponse.reject(new ConnectionError('SocketIOClient: ClientSocket not created or connected'));
       }
 
       return futureResponse.promise;

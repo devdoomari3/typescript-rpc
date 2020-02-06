@@ -14,7 +14,7 @@ export abstract class BaseAPIServer {
     [apiName: string]: (req: any) => Promise<CleanedResponseType>;
   } = {};
   addAPI<
-    APIType extends ReqRespAPIType<any, any, any>
+    APIType extends ReqRespAPIType<any, any, any, any>
   >(
     api: APIType,
     handler: (
@@ -24,7 +24,7 @@ export abstract class BaseAPIServer {
     this.handlers[api.name] = handler;
   }
   checkAPIAllImplemented(apis: {
-    [name: string]: ReqRespAPIType<any, any, string>;
+    [name: string]: ReqRespAPIType<any, any, any, string>;
   }) {
     Object.keys(apis)
       .forEach(key => {
