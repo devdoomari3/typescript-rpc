@@ -4,7 +4,9 @@ import uuidv4 from 'uuid/v4';
 import {
   APICall,
   BaseAPIClient,
+  GetAPICallType,
 } from '../../BaseAPIClient';
+import { BaseError } from '../../errors/BaseError';
 import {
   BaseResponseType,
   ReqRespAPIType,
@@ -20,12 +22,7 @@ export class RendererIPCClient extends BaseAPIClient {
     APIType extends ReqRespAPIType<any, any, any, any>
   >(
     api: APIType,
-  ): APICall<
-    UnpackReqRespAPIType<APIType>['RequestType'],
-    UnpackReqRespAPIType<APIType>['ResponseType'],
-    UnpackReqRespAPIType<APIType>['PossibleRuntimeErrorTypes'],
-    UnpackReqRespAPIType<APIType>['name']
-  > {
+  ): GetAPICallType<APIType> {
     return async (req) => {
       const requestId = uuidv4();
       const futureResponse = defer<

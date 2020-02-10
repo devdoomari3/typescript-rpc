@@ -1,5 +1,5 @@
 import { runTestsForImplementation } from '../../testUtils/testAdapter';
-import { echoAPITest } from '../testCases/echoAPI';
+import { echoAPINotConnectedTest, echoAPITest } from '../testCases/echoAPI';
 import {
   createClientServerPair,
 } from './createClientServerPair';
@@ -11,9 +11,8 @@ runTestsForImplementation(
   }),
 );
 
-
 runTestsForImplementation(
-  [echoAPITest],
+  [echoAPINotConnectedTest],
   createClientServerPair({
     name: 'SocketIO disconnected API',
     disconnected: true,

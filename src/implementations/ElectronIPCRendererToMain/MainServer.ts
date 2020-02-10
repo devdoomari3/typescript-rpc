@@ -13,7 +13,7 @@ export class MainIPCServer extends BaseAPIServer {
   constructor() {
     super();
     ipcMain.on(channelName, async (event, ipcArgs: IPCArgsType) => {
-      const handler = this.handlers[ipcArgs.funcName];
+      const handler = this.apiRunners[ipcArgs.funcName];
       if (!handler) {
         event.reply({
           error: `NO SERVER IMPLEMENTATION FOR ${ipcArgs.funcName}`,

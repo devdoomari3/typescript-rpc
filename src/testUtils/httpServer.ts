@@ -13,7 +13,8 @@ export function startHTTPServer(
       )
       .once('listening', () => {
         resolve(listeningServer);
-      });
+      })
+      .on('error', reject);
   });
 }
 

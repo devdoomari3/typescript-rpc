@@ -1,4 +1,4 @@
-import { right } from 'fp-ts/lib/Either';
+import { isLeft, left, right } from 'fp-ts/lib/Either';
 import {
   createAPIDefinition,
 } from '../../createAPI';
@@ -8,6 +8,7 @@ import {
   ToRequestType,
   ToResponseType,
 } from '../../types';
+import { ConnectionError } from '../../errors/ConnectionError';
 
 export type EchoRequest = ToRequestType<{
   echoReq: string;
@@ -59,10 +60,9 @@ export const echoAPINotConnectedTest: TestDefinition = {
     const result = await APIClient.callAPI(echoAPI)({
       echoReq: 'test',
     });
-    const expectedResult = {
-      echoResp: 'test',
-    } as EchoResponse;
-    expect(result)
-      .toStrictEqual(right(expectedResult));
+
+    if (!isLeft(result)) { throw new Error('result not Left< ... > (should be Left<ConnectionError>'); }
+    expect(result.left)
+      .toBeInstanceOf(ConnectionError);
   },
 };

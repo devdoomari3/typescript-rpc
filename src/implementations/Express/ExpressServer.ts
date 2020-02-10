@@ -18,7 +18,7 @@ export class ExpressAPIServer extends BaseAPIServer {
           funcName,
           args,
         } = req.body as RequestBodyType;
-        const handler = this.handlers[funcName];
+        const handler = this.apiRunners[funcName];
         try {
           const result = await handler(args);
           resp

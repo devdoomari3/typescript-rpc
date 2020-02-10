@@ -5,6 +5,7 @@ import {
   APICall,
   BaseAPIClient,
   RPCOptions,
+  GetAPICallType,
 } from '../../BaseAPIClient';
 import {
   ReqRespAPIType,
@@ -28,12 +29,7 @@ export class HTTPAxiosClient extends BaseAPIClient {
   >(
     api: APIType,
     defaultRPCOptions?: RPCOptions | undefined,
-  ): APICall<
-    UnpackReqRespAPIType<APIType>['RequestType'],
-    UnpackReqRespAPIType<APIType>['ResponseType'],
-    UnpackReqRespAPIType<APIType>['PossibleRuntimeErrorTypes'],
-    UnpackReqRespAPIType<APIType>['name']
-  > {
+  ): GetAPICallType<APIType> {
     return async (req) => {
       const requestId = uuidv4();
       const body = {

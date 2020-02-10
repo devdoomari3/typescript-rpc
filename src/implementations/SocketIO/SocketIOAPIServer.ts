@@ -16,8 +16,8 @@ export class SocketIOAPIServer extends BaseAPIServer {
   }
   createRequestHandler(socket: SocketIO.Socket) {
     return async (req: SocketIORequestType) => {
-      const handler = this.handlers[req.apiName];
-      const result = await handler(req.request);
+      const apiRunner = this.apiRunners[req.apiName];
+      const result = await apiRunner(req.request);
       socket.emit(EventTypes.RESPONSE, {
         apiName: req.apiName,
         response: result,

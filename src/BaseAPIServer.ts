@@ -10,18 +10,18 @@ export type CleanedResponseType<
 > = Omit<T, '___BaseResponseType'>;
 
 export abstract class BaseAPIServer {
-  handlers: {
+  apiRunners: {
     [apiName: string]: (req: any) => Promise<CleanedResponseType>;
   } = {};
   addAPI<
     APIType extends ReqRespAPIType<any, any, any, any>
   >(
     api: APIType,
-    handler: (
+    apiRunner: (
       req: UnpackReqRespAPIType<APIType>['RequestType'],
     ) => Promise<CleanedResponseType<UnpackReqRespAPIType<APIType>['ResponseType']>>,
   ) {
-    this.handlers[api.name] = handler;
+    this.apiRunners[api.name] = apiRunner;
   }
   checkAPIAllImplemented(apis: {
     [name: string]: ReqRespAPIType<any, any, any, string>;
@@ -31,7 +31,7 @@ export abstract class BaseAPIServer {
         const api = apis[key];
         if (
           api.APIType === 'ReqRespAPIType' &&
-          !this.handlers[api.name]
+          !this.apiRunners[api.name]
         ) throw new Error(`HANDLER NOT IMPLEMENTED FOR: ${api.name}`);
       });
   }

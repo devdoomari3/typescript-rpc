@@ -13,16 +13,19 @@ import {
 import {
   APICall,
   BaseAPIClient,
+  GetAPICallType,
 } from '../../BaseAPIClient';
+import { BaseError } from '../../errors/BaseError';
+import { ConnectionError } from '../../errors/ConnectionError';
 import {
   EventTypes,
   SocketIORequestType,
   SocketIOResponseType,
 } from './common';
-import { ConnectionError } from '../../errors/ConnectionError';
 
 @autobind
 export class SocketIOAPIClient extends BaseAPIClient {
+
   responseHandlers: {
     [requestID: string]: DeferPromise.Deferred<BaseResponseType>;
   } = {};
@@ -42,12 +45,7 @@ export class SocketIOAPIClient extends BaseAPIClient {
     APIType extends ReqRespAPIType<any, any, any, any>
   >(
     api: APIType,
-  ): APICall<
-    UnpackReqRespAPIType<APIType>['RequestType'],
-    UnpackReqRespAPIType<APIType>['ResponseType'],
-    UnpackReqRespAPIType<APIType>['PossibleRuntimeErrorTypes'],
-    UnpackReqRespAPIType<APIType>['name']
-  > {
+  ): GetAPICallType<APIType> {
     return async (req) => {
       const requestId = uuidv4();
       const futureResponse = defer<
