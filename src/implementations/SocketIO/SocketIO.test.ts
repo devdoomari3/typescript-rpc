@@ -1,11 +1,18 @@
 import { runTestsForImplementation } from '../../testUtils/testAdapter';
-import { echoAPINotConnectedTest, echoAPITest } from '../testCases/echoAPI';
+import {
+  echoAPINotConnectedTest,
+  echoAPIServerSideError,
+  echoAPITest,
+} from '../testCases/echoAPI';
 import {
   createClientServerPair,
 } from './createClientServerPair';
 
 runTestsForImplementation(
-  [echoAPITest],
+  [
+    echoAPITest,
+    echoAPIServerSideError,
+  ],
   createClientServerPair({
     name: 'SocketIO Normal',
   }),

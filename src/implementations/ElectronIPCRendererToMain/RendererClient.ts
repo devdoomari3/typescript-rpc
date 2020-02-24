@@ -6,7 +6,7 @@ import {
   BaseAPIClient,
   GetAPICallType,
 } from '../../BaseAPIClient';
-import { BaseError } from '../../errors/BaseError';
+import { defaultKnownErrors } from '../../errors';
 import {
   BaseResponseType,
   ReqRespAPIType,

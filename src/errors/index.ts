@@ -1,8 +1,9 @@
-import { ServerRuntimeError } from './ServerRuntimeError';
-import { TimeoutError } from './Timeout';
 
-export type PossibleErrorTypes<RuntimeError extends Error = any> =
-  ServerRuntimeError<RuntimeError> |
-  TimeoutError |
-  never
-;
+import { TimeoutErrorDefinition } from './common/Timeout';
+import { createErrorDecoder } from './__base'
+import { ServerInternalErrorDefinition } from './ServerInternal';
+
+export const defaultKnownErrors = createErrorDecoder([
+  TimeoutErrorDefinition,
+  ServerInternalErrorDefinition,
+])

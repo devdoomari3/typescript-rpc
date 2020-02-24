@@ -21,8 +21,7 @@ export type UserPointResponseType = {
 
 export const getUserPointAPI = createAPIDefinition<
   UserPointRequestType,
-  UserPointResponseType,
-  Error
+  UserPointResponseType
 >()('userPointAPI');
 
 export type UserProfileUpdateRequestType = {
@@ -36,6 +35,5 @@ export type UserProfileUpdateResponseType = {
 
 export const updateUserProfileAPI = createAPIDefinition<
   UserProfileUpdateRequestType,
-  UserProfileUpdateResponseType,
-  Error
+  UserProfileUpdateResponseType
 >()('updateUserProfile');

@@ -1,4 +1,5 @@
 
+import * as t from 'io-ts';
 export type BaseRequestType = {
   ___BaseRequestType: null;
 };
@@ -14,11 +15,12 @@ export type ToResponseType<T> = T & BaseResponseType;
 export type ReqRespAPIType<
   RequestType extends BaseRequestType,
   ResponseType extends BaseResponseType,
-  RuntimeErrorTypes extends Error,
-  name extends string
+  name extends string,
+  RuntimeErrorTypes extends t.Mixed = t.Any,
 > = {
   name: name;
   APIType: 'ReqRespAPIType';
+  runtimeErrorTypes?: RuntimeErrorTypes;
 };
 
 export type UnpackReqRespAPIType<
@@ -26,13 +28,13 @@ export type UnpackReqRespAPIType<
 > = T extends ReqRespAPIType<
                 infer RequestType,
                 infer ResponseType,
-                infer PossibleRuntimeErrorTypes,
-                infer name
+                infer name,
+                infer RuntimeErrorTypes
               > ? {
                 RequestType: RequestType;
                 ResponseType: ResponseType;
-                PossibleRuntimeErrorTypes: PossibleRuntimeErrorTypes;
                 name: name;
+                RuntimeErrorTypes: RuntimeErrorTypes;
               } : never;
 
 export type StreamedAPIType<

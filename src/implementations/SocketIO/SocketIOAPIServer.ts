@@ -1,7 +1,13 @@
 import { autobind } from 'core-decorators';
 import socketio from 'socket.io';
 import { BaseAPIServer } from '../../BaseAPIServer';
-import { EventTypes, SocketIORequestType, SocketIOResponseType } from './common';
+import { toIServerRuntimeError } from '../../errors/ServerRuntimeError';
+import {
+  EventTypes,
+  SocketIOErrorResponseType,
+  SocketIORequestType,
+  SocketIOResponseType,
+} from './common';
 
 @autobind
 export class SocketIOAPIServer extends BaseAPIServer {
@@ -16,13 +22,23 @@ export class SocketIOAPIServer extends BaseAPIServer {
   }
   createRequestHandler(socket: SocketIO.Socket) {
     return async (req: SocketIORequestType) => {
-      const apiRunner = this.apiRunners[req.apiName];
-      const result = await apiRunner(req.request);
-      socket.emit(EventTypes.RESPONSE, {
-        apiName: req.apiName,
-        response: result,
-        requestId: req.requestId,
-      } as SocketIOResponseType);
+      try {
+        const apiRunner = this.apiRunners[req.apiName];
+        const result = await apiRunner(req.request);
+        socket.emit(EventTypes.RESPONSE, {
+          apiName: req.apiName,
+          response: result,
+          requestId: req.requestId,
+        } as SocketIOResponseType);
+      } catch (e) {
+        // const runtimeError = new ServerRuntimeError(e);
+        socket.emit(EventTypes.RUNNER_ERROR, {
+          apiName: req.apiName,
+          errorResponse: toIServerRuntimeError(e),
+          requestId: req.requestId,
+        } as SocketIOErrorResponseType);
+      }
+
     };
   }
   addSocket(socket: SocketIO.Socket) {

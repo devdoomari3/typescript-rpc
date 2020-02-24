@@ -24,7 +24,7 @@ export abstract class BaseAPIServer {
     this.apiRunners[api.name] = apiRunner;
   }
   checkAPIAllImplemented(apis: {
-    [name: string]: ReqRespAPIType<any, any, any, string>;
+    [name: string]: ReqRespAPIType<any, any, string>;
   }) {
     Object.keys(apis)
       .forEach(key => {

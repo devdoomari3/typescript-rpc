@@ -20,9 +20,17 @@ export type SocketIOResponseType = {
   response: BaseResponseType;
 };
 
+export type SocketIOErrorResponseType = {
+  apiName: string;
+  requestId: RequestIdType;
+  errorResponse: any;
+}
+
 export const EventTypes = Enum(
   'RESPONSE',
   'REQUEST',
+  'UnexpectedExecError',
+  'KnownExecError',
 );
 
 export type EventTypes = Enum<typeof EventTypes>;

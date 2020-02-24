@@ -4,7 +4,6 @@ import {
 import defer from 'defer-promise';
 import uuidv4 from 'uuid/v4';
 import {
-  BaseRequestType,
   BaseResponseType,
   ReqRespAPIType,
   UnpackReqRespAPIType,
@@ -15,10 +14,11 @@ import {
   BaseAPIClient,
   GetAPICallType,
 } from '../../BaseAPIClient';
-import { BaseError } from '../../errors/BaseError';
-import { ConnectionError } from '../../errors/ConnectionError';
+// import { ConnectionError } from '../../errors/ConnectionError';
+// import { IServerRuntimeError } from '../../errors/ServerRuntimeError';
 import {
   EventTypes,
+  SocketIOErrorResponseType,
   SocketIORequestType,
   SocketIOResponseType,
 } from './common';
@@ -36,9 +36,15 @@ export class SocketIOAPIClient extends BaseAPIClient {
     socket: SocketIOClient.Socket,
   ) {
     this.socket = socket;
+    socket.on(EventTypes.RUNNER_ERROR, (err: SocketIOErrorResponseType) => {
+      const requestHandler = this.responseHandlers[err.requestId];
+      requestHandler?.reject(err.errorResponse as IServerRuntimeError);
+
+    });
     socket.on(EventTypes.RESPONSE, (data: SocketIOResponseType) => {
       const requestHandler = this.responseHandlers[data.requestId];
       requestHandler?.resolve(data.response);
+
     });
   }
   __callAPI<

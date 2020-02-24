@@ -1,3 +1,4 @@
+import * as t from 'io-ts'
 import {
   BaseRequestType,
   BaseResponseType,
@@ -7,19 +8,23 @@ import {
 export function createAPIDefinition<
   RequestType extends BaseRequestType,
   ResponseType extends BaseResponseType,
-  PossibleRuntimeErrorTypes extends Error,
 >() {
   function __withAPIName<
-    name extends string
-  >(name: name): ReqRespAPIType<
-                  RequestType,
-                  ResponseType,
-                  PossibleRuntimeErrorTypes,
-                  name
-                > {
+    name extends string,
+    RuntimeErrorTypes extends t.Mixed = t.Any,
+  >(
+    name: name,
+    runtimeErrorTypes?: RuntimeErrorTypes,
+  ): ReqRespAPIType<
+      RequestType,
+      ResponseType,
+      name,
+      RuntimeErrorTypes
+    > {
     return {
       name,
       APIType: 'ReqRespAPIType',
+      runtimeErrorTypes,
     };
   }
 
