@@ -1,12 +1,12 @@
 import getPort from 'get-port';
 import http from 'http';
-import socketIO from 'socket.io';
+import { Server as SocketIOServer } from 'socket.io';
 import socketIOClient from 'socket.io-client';
 import { echoAPI } from '../testFixtures/APIs';
 import { SocketIOAPIClient } from './SocketIOAPIClient';
 import { SocketIOAPIServer } from './SocketIOAPIServer';
 
-jest.setTimeout(30000);
+jest.setTimeout(50000);
 
 function listenHTTPServer(
   httpServer: http.Server,
@@ -34,17 +34,19 @@ describe('SocketIO implementation should...', () => {
       port,
       '127.0.0.1',
     );
-    const serverSocketIO = socketIO(httpServer);
+    const serverSocketIO = new SocketIOServer(httpServer);
     apiServer = new SocketIOAPIServer(serverSocketIO);
-    const clientSocketIO = socketIOClient.connect(
+    const clientSocketIO = socketIOClient(
       `http://127.0.0.1:${port}`,
     );
-    serverSocketIO.on('connection', socket => apiServer.addSocket(socket));
-    await new Promise(resolve => {
-      clientSocketIO.on('connect', resolve);
+    serverSocketIO.on('connection', socket => {
+      console.log('1');
+      apiServer.addSocket(socket)
     });
-    apiClient = new SocketIOAPIClient();
-    apiClient.init(clientSocketIO);
+    await new Promise(resolve => {
+      clientSocketIO.on('connect', () => resolve(null));
+    });
+    apiClient = new SocketIOAPIClient(clientSocketIO);
     apiServer.addAPI(echoAPI, async req => {
       return {
         echoResp: req.echoReq,
@@ -53,17 +55,17 @@ describe('SocketIO implementation should...', () => {
   });
 
   it('test', async () => {
-
     const result = await apiClient.useAPI(echoAPI)({
       echoReq: 'test',
     });
-    console.error(result);
     expect(true).toBeTruthy();
   });
   afterEach(async () => {
+    apiClient.cleanUp()
     await new Promise((resolve) => {
       httpServer.close(resolve);
     });
+    
   });
   // test('call/handle simple API request');
 });
