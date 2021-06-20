@@ -5,8 +5,4 @@ export declare type EchoRequest = ToRequestType<{
 export declare type EchoResponse = ToResponseType<{
     echoResp: string;
 }>;
-export declare const echoAPI: import("../../types").ReqRespAPIType<ToRequestType<{
-    echoReq: string;
-}>, ToResponseType<{
-    echoResp: string;
-}>, "echo">;
+export declare const echoAPI: import("../../types").ReqRespAPIType<EchoRequest, EchoResponse, "echo">;
