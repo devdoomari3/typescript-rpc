@@ -23,13 +23,4 @@ export abstract class BaseAPIClient {
     UnpackReqRespAPIType<APIType>['ResponseType'],
     UnpackReqRespAPIType<APIType>['name']
   >;
-
-  // call<
-  //   RequestType extends CustomBaseRequestType,
-  //   ResponseType extends BaseResponseType,
-  //   name extends string,
-  // > APICall<
-  //   CustomBaseRequestType, RequestType, ResponseType, name,
-  // >
-  // abstract call: APICall<
 }

@@ -2,14 +2,16 @@ import {
   autobind,
 } from 'core-decorators';
 import defer from 'defer-promise';
-import uuidv4 from 'uuid/v4';
+import { 
+  Socket as SocketIOClientSocket,
+} from 'socket.io-client';
+import { v4 as uuidv4 } from 'uuid';
 import {
   ReqRespAPIType,
   BaseRequestType,
   BaseResponseType,
   UnpackReqRespAPIType,
 } from '../../types';
-
 import {
   APICall,
   BaseAPIClient,
@@ -27,16 +29,14 @@ export class SocketIOAPIClient extends BaseAPIClient {
   } = {};
   // FIXME: add 'requests queue' with timeout
   //   (queue of to-send-when-socket-connects requests)
-  socket?: SocketIOClient.Socket;
-  init(
-    socket: SocketIOClient.Socket,
-  ) {
-    this.socket = socket;
+  constructor(public socket: SocketIOClientSocket) {
+    super();
     socket.on(EventTypes.RESPONSE, (data: SocketIOResponseType) => {
       const requestHandler = this.responseHandlers[data.requestId];
-      requestHandler && requestHandler.resolve(data.response);
+      requestHandler?.resolve(data.response);
+      delete this.responseHandlers[data.requestId];
     });
-  }
+}
   useAPI<
     APIType extends ReqRespAPIType<any, any, any>
   >(
@@ -65,5 +65,13 @@ export class SocketIOAPIClient extends BaseAPIClient {
 
       return futureResponse.promise;
     };
+  }
+
+  cleanUp() {
+    for (let key in this.responseHandlers) {
+      // FIXME: make typed error class
+      this.responseHandlers[key].reject(new Error('API Client exited...'))
+    }
+    this.socket.close()
   }
 }
