@@ -1,5 +1,5 @@
 import { autobind } from 'core-decorators';
-import socketio from 'socket.io';
+import * as SocketIO from 'socket.io';
 import { BaseAPIServer } from '../../BaseAPIServer';
 import { EventTypes, SocketIORequestType, SocketIOResponseType } from './common';
 
@@ -11,7 +11,7 @@ export class SocketIOAPIServer extends BaseAPIServer {
   socketRemovers: {
     [socketId: string]: () => void;
   } = {};
-  constructor(public socketioServer: socketio.Server) {
+  constructor(public socketioServer: SocketIO.Server) {
     super();
   }
   createRequestHandler(socket: SocketIO.Socket) {
